@@ -26,6 +26,9 @@ right_drive = MotorGroup([right_front, right_back, right_stacked])
 
 def drive(left_speed, right_speed):
 
+    left_speed = limit_speed(left_speed)
+    right_speed = limit_speed(right_speed)
+
     left_magnitude = abs(left_speed)
     right_magnitude = abs(right_speed)
 
@@ -44,6 +47,14 @@ def drive(left_speed, right_speed):
 
     left_drive.spin(left_direction)
     right_drive.spin(right_direction)
+
+
+def limit_speed(speed):
+    if speed > 100:
+        return 100
+    if speed < -100:
+        return -100
+    return speed
 
 
 def stop_drive():
