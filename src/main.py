@@ -25,8 +25,26 @@ left_drive = MotorGroup([left_front, left_back, left_stacked])
 right_drive = MotorGroup([right_front, right_back, right_stacked])
 
 def drive(left_speed, right_speed):
-    left_drive.set_velocity(left_speed, PERCENT)
-    right_drive.set_velocity(right_speed, PERCENT)
+
+    left_magnitude = abs(left_speed)
+    right_magnitude = abs(right_speed)
+
+    if left_speed >= 0:
+        left_direction = FORWARD
+    else:
+        left_direction = REVERSE
+
+    if right_speed >= 0:
+        right_direction = FORWARD
+    else:
+        right_direction = REVERSE
+
+    left_drive.set_velocity(left_magnitude, PERCENT)
+    right_drive.set_velocity(right_magnitude, PERCENT)
+
+    left_drive.spin(left_direction)
+    right_drive.spin(right_direction)
+
 
 def stop_drive():
     left_drive.stop(COAST)
