@@ -32,6 +32,19 @@ def stop_drive():
     left_drive.stop(COAST)
     right_drive.stop(COAST)
 
+
+DRIVE_CURVE = 2.5  # Define the drive curve exponent
+def apply_curve(speed):
+    sign = 1
+
+    if speed < 0:
+        sign = -1
+
+    magnitude = abs(speed)
+    curved = (magnitude/100) ** DRIVE_CURVE * 100
+    return sign * curved
+
+
 def autonomous():
     brain.screen.clear_screen()
     brain.screen.print("autonomous code")
@@ -50,6 +63,9 @@ def user_control():
             left_speed = 0
         if abs(right_speed) < DEADBAND:
             right_speed = 0
+
+        left_speed = apply_curve(left_speed)
+        right_speed = apply_curve(right_speed)
 
         drive(left_speed, right_speed)
 
