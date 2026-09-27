@@ -14,12 +14,12 @@ brain = Brain()
 
 controller = Controller()
 
-left_front = Motor(Ports.port1, False)
-right_front = Motor(Ports.port2, True)
-left_back = Motor(Ports.port3, False)
-right_back = Motor(Ports.port4, True)
-left_stacked = Motor(Ports.port5, False)
-right_stacked = Motor(Ports.port6, True)
+left_front = Motor(Ports.PORT1, False)
+right_front = Motor(Ports.PORT2, True)
+left_back = Motor(Ports.PORT3, False)
+right_back = Motor(Ports.PORT4, True)
+left_stacked = Motor(Ports.PORT5, False)
+right_stacked = Motor(Ports.PORT6, True)
 
 left_drive = MotorGroup([left_front, left_back, left_stacked])
 right_drive = MotorGroup([right_front, right_back, right_stacked])
@@ -32,6 +32,10 @@ def stop_drive():
     left_drive.stop(COAST)
     right_drive.stop(COAST)
 
+def apply_deadband(speed, deadband):
+    if abs(speed) < deadband:
+        return 0
+    return speed
 
 DRIVE_CURVE = 2.5  # Define the drive curve exponent
 def apply_curve(speed):
@@ -56,8 +60,8 @@ def user_control():
     # place driver control in this while loop
     DEADBAND = 5  # Define the deadband threshold
     while True:
-        left_speed = controller.axis3.position(PERCENT)
-        right_speed = controller.axis2.position(PERCENT)
+        left_speed = controller.axis3.position()
+        right_speed = controller.axis2.position()
 
         if abs(left_speed) < DEADBAND:
             left_speed = 0
@@ -66,6 +70,9 @@ def user_control():
 
         left_speed = apply_curve(left_speed)
         right_speed = apply_curve(right_speed)
+
+        left_speed = apply_deadband(left_speed, DEADBAND)
+        right_speed = apply_deadband(right_speed, DEADBAND)
 
         drive(left_speed, right_speed)
 
